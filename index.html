@@ -3,66 +3,57 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<title>La Mia Cabina — 3D</title>
+<title>La Mia Cabina</title>
 <link rel="manifest" href="manifest.json" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Outfit:wght@400;500&display=swap" rel="stylesheet" />
-<script type="importmap">
-{
-  "imports": {
-    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
-    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
-  }
-}
-</script>
+<script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"}}</script>
 <style>
-:root{--bg:#16100c;--panel:#241c16;--gold:#c9a36a;--gold-2:#e8d5b0;--text:#f6efe6;--muted:#b7a898;--line:rgba(201,163,106,.28);--danger:#c46a5a}
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Outfit,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
-.app{max-width:1180px;margin:0 auto;padding:16px 16px 110px}
-header.top{display:flex;justify-content:space-between;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-.brand h1{font-family:"Cormorant Garamond",serif;font-size:clamp(28px,5vw,42px)}
-.brand p{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
-.stats{display:flex;gap:8px}.stat{border:1px solid var(--line);border-radius:14px;padding:8px 12px}
+:root{--bg:#16100c;--panel:#241c16;--gold:#c9a36a;--gold-2:#e8d5b0;--text:#f6efe6;--muted:#b7a898;--line:rgba(201,163,106,.28)}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Outfit,system-ui;background:var(--bg);color:var(--text);min-height:100dvh}
+.app{max-width:900px;margin:0 auto;padding:16px 16px 110px}
+.brand h1{font-family:"Cormorant Garamond",serif;font-size:34px}
+.brand p{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase;margin-bottom:12px}
+.stats{display:flex;gap:8px;margin-bottom:14px}.stat{border:1px solid var(--line);border-radius:14px;padding:8px 12px}
 .stat b{display:block;font-family:"Cormorant Garamond",serif;font-size:20px;color:var(--gold-2)}
-.stat span{font-size:10px;color:var(--muted);text-transform:uppercase}
-.stage{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);height:min(58vh,520px);background:#120e0b;margin-bottom:14px}
-canvas{width:100%;height:100%;display:block;touch-action:none}
-.stage-ui{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;flex-wrap:wrap;z-index:3}
-.hint{position:absolute;top:12px;left:12px;right:12px;color:var(--gold-2);font-size:13px;text-shadow:0 2px 8px #000;z-index:2}
-.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.stage{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);height:min(52vh,480px);background:#120e0b;margin-bottom:12px}
+canvas,.look-hero{width:100%;height:100%;display:block;object-fit:contain;background:#1a140f}
+.stage-ui{position:absolute;left:10px;right:10px;bottom:10px;display:flex;gap:8px;flex-wrap:wrap;z-index:3}
+.hint{position:absolute;top:10px;left:10px;right:10px;color:var(--gold-2);font-size:13px;text-shadow:0 2px 8px #000;z-index:2}
 .btn{border:0;border-radius:999px;padding:11px 16px;cursor:pointer;font-weight:500}
 .btn-gold{background:linear-gradient(180deg,#e0c48a,#c9a36a);color:#1a120c}
-.btn-ghost{background:rgba(22,16,12,.72);color:var(--gold-2);border:1px solid var(--line)}
-.btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(196,106,90,.4)}
+.btn-ghost{background:rgba(22,16,12,.75);color:var(--gold-2);border:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;position:relative}
-.card .ph{aspect-ratio:3/4;display:grid;place-items:center;color:#1a120c;font-size:12px;font-weight:600;text-align:center;padding:8px}
+.card .ph{aspect-ratio:3/4;background:#2b2119;display:grid;place-items:center;overflow:hidden}
+.card .ph img{width:100%;height:100%;object-fit:cover}
 .card .meta{padding:10px}.card .meta h3{font-size:14px}.card .meta p{color:var(--muted);font-size:11px;margin-top:3px}
 .fav{position:absolute;top:8px;right:8px;background:rgba(22,16,12,.6);border:0;color:var(--gold);width:30px;height:30px;border-radius:50%}
-.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(22,16,12,.92);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:20}
-.tab{background:none;border:0;color:var(--muted);padding:8px 4px;font-size:10px;text-transform:uppercase}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(22,16,12,.94);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:20}
+.tab{background:none;border:0;color:var(--muted);padding:8px 2px;font-size:10px;text-transform:uppercase}
 .tab.active{color:var(--gold-2)}.tab span{display:block;font-size:16px}
-.search{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:11px 16px;color:var(--text)}
-.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 12px}
-.chip.active{background:var(--gold);color:#1a120c}
+.search{flex:1;min-width:140px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:11px 16px;color:var(--text)}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
+.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 12px}.chip.active{background:var(--gold);color:#1a120c}
 dialog{border:1px solid var(--line);border-radius:22px;background:#1c1510;color:var(--text);width:min(720px,calc(100vw - 16px));padding:0}
 dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 .form{display:grid;gap:10px}.form input,.form select{width:100%;background:#2a211a;border:1px solid var(--line);border-radius:12px;padding:11px;color:var(--text)}
 .preview{width:100%;max-height:220px;object-fit:contain}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .outfit{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.slot{min-height:140px;border:1px dashed var(--line);border-radius:16px;background:var(--panel);display:flex;align-items:center;justify-content:center;color:var(--muted)}
-.zones{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 16px}
+.slot{min-height:130px;border:1px dashed var(--line);border-radius:16px;background:var(--panel);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.zones{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0}
 .zone{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--text);text-align:left}
-#view360,#viewAvatar{height:min(62vh,500px)}
-.empty{text-align:center;padding:40px 12px;border:1px dashed var(--line);border-radius:18px;color:var(--muted)}
+#view360{height:min(62vh,500px)}
+.look-wrap{border-radius:22px;overflow:hidden;border:1px solid var(--line);background:#1a140f;margin-bottom:12px}
+.look-wrap img{width:100%;max-height:70vh;object-fit:contain;display:block}
 </style></head>
 <body>
 <div class="app">
-<header class="top"><div class="brand"><h1>La Mia Cabina</h1><p>Avatar 3D + armadio</p></div>
-<div class="stats"><div class="stat"><b id="nItems">0</b><span>Capi</span></div><div class="stat"><b id="nFav">0</b><span>Pref.</span></div><div class="stat"><b id="nOut">0</b><span>Look</span></div></div></header>
+<div class="brand"><h1>La Mia Cabina</h1><p>Look fotografici + cabina</p></div>
+<div class="stats"><div class="stat"><b id="nItems">0</b><span>Capi</span></div><div class="stat"><b id="nFav">0</b><span>Pref.</span></div><div class="stat"><b id="nOut">0</b><span>Look</span></div></div>
 <section id="view-home">
-<div class="stage"><div class="hint">Trascina per girare la cabina. Tab Avatar = gemello vestito.</div><canvas id="view3d"></canvas>
-<div class="stage-ui"><button class="btn btn-gold" id="btnAdd">+ Capo</button><button class="btn btn-ghost" id="btn360">NB 1000 360°</button><button class="btn btn-ghost" id="btnMotion">Pausa</button></div></div>
+<div class="stage"><div class="hint">Cabina 3D. Per i look veri apri Avatar.</div><canvas id="view3d"></canvas>
+<div class="stage-ui"><button class="btn btn-gold" id="btnAdd">+ Capo</button><button class="btn btn-ghost" id="btn360">NB 1000</button><button class="btn btn-ghost" id="btnMotion">Pausa</button></div></div>
 <div class="zones">
 <button class="zone" data-cat="Camicie"><strong>Camicie</strong></button>
 <button class="zone" data-cat="Pantaloni"><strong>Pantaloni</strong></button>
@@ -76,20 +67,23 @@ dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 <div class="chips" id="chips"></div><div id="grid" class="grid"></div>
 </section>
 <section id="view-avatar" hidden>
-<h2 style="font-family:'Cormorant Garamond',serif;font-size:30px;margin-bottom:8px">Il tuo gemello 3D</h2>
-<p style="color:var(--muted);margin-bottom:10px">Gira l’avatar. Casual NB oppure look classico blu.</p>
-<div class="stage"><canvas id="viewAvatar"></canvas></div>
-<div class="toolbar"><button class="btn btn-gold" id="lookCasual">Casual: maglia + cargo + 1000</button><button class="btn btn-ghost" id="lookClassico">Classico: camicia + pantaloni blu</button></div>
+<h2 style="font-family:'Cormorant Garamond',serif;font-size:30px;margin-bottom:6px">Come stanno addosso</h2>
+<p style="color:var(--muted);margin-bottom:10px">Foto lookbook dei tuoi acquisti, non il manichino.</p>
+<div class="look-wrap"><img id="lookPhoto" alt="Look"></div>
+<div class="toolbar">
+<button class="btn btn-gold" id="lookCasual">Casual NB</button>
+<button class="btn btn-ghost" id="lookClassico">Classico blu</button>
+</div>
 </section>
 <section id="view-look" hidden>
-<h2 style="font-family:'Cormorant Garamond',serif;font-size:30px">Componi un look</h2>
+<h2 style="font-family:'Cormorant Garamond',serif;font-size:30px">Componi</h2>
 <div class="outfit"><div class="slot" data-slot="top">Sopra</div><div class="slot" data-slot="bottom">Sotto</div><div class="slot" data-slot="shoes">Scarpe</div><div class="slot" data-slot="bag">Borsa</div></div>
 <div class="row"><button class="btn btn-gold" id="saveLook">Salva</button><button class="btn btn-ghost" id="clearLook">Svuota</button></div>
 <div id="looks" class="grid"></div>
 </section>
 <section id="view-info" hidden>
-<p style="color:var(--muted);line-height:1.7">Se lo schermo 3D è nero, aggiorna la pagina. I capi sono già in lista sotto Capi.</p>
-<button class="btn btn-danger" id="wipe">Cancella dati</button>
+<p style="color:var(--muted);line-height:1.7">In Avatar vedi le foto reali dei look. La cabina 3D resta una pianta della stanza.</p>
+<button class="btn btn-danger" id="wipe" style="margin-top:12px;background:transparent;color:#c46a5a;border:1px solid rgba(196,106,90,.4);border-radius:999px;padding:10px 16px">Cancella dati</button>
 </section>
 </div>
 <nav class="bottom">
@@ -105,31 +99,29 @@ dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 <label>Nome<input id="name" required></label>
 <label>Categoria<select id="cat"><option>Camicie</option><option>Maglie</option><option>Pantaloni</option><option>Gonne</option><option>Abiti</option><option>Giacche</option><option>Cappotti</option><option>Scarpe</option><option>Borse</option><option>Accessori</option></select></label>
 <label>Note<input id="note"></label>
-<div class="row"><button type="button" class="btn btn-danger" id="delItem" hidden>Elimina</button><button type="button" class="btn btn-ghost" id="cancelItem">Chiudi</button><button class="btn btn-gold" type="submit">Salva</button></div>
-</form></div></dialog>
+<div class="row"><button type="button" class="btn btn-danger" id="delItem" hidden>Elimina</button><button type="button" class="btn btn-ghost" id="cancelItem">Chiudi</button><button class="btn btn-gold" type="submit">Salva</button></div></form></div></dialog>
 <dialog id="dlgPick"><div class="dlg"><h3>Scegli</h3><div id="pickGrid" class="grid"></div><button class="btn btn-ghost" id="closePick">Chiudi</button></div></dialog>
 <dialog id="dlg360"><div class="dlg"><h3>New Balance 1000</h3><canvas id="view360"></canvas>
 <div class="row"><button class="btn btn-ghost" id="btn360spin">Pausa</button><button class="btn btn-gold" id="close360">Chiudi</button></div></div></dialog>
+<script src="looks.js"></script>
 <script src="app.js"></script>
 <script type="module">
 import { initCloset3D } from "./scene3d.js";
 import { initShoe360 } from "./shoe3d.js";
-import { initAvatar3D } from "./avatar3d.js";
 try {
   const api = initCloset3D(document.getElementById("view3d"), () => window.__cabinaItems ? window.__cabinaItems() : []);
   if (window.__cabinaReady) window.__cabinaReady(api);
 } catch (e) { console.error(e); }
 let shoeApi=null;
-function open360(){
-  document.getElementById("dlg360").showModal();
-  try { if(shoeApi) shoeApi.dispose(); shoeApi=initShoe360(document.getElementById("view360")); } catch(e){ console.error(e); }
-}
-window.__open360=open360;
-document.getElementById("btn360").onclick=open360;
+window.__open360=()=>{ document.getElementById("dlg360").showModal(); try{ if(shoeApi) shoeApi.dispose(); shoeApi=initShoe360(document.getElementById("view360")); }catch(e){console.error(e)} };
+document.getElementById("btn360").onclick=window.__open360;
 document.getElementById("close360").onclick=()=>document.getElementById("dlg360").close();
-let av=null;
-try { av=initAvatar3D(document.getElementById("viewAvatar"),"casual"); } catch(e){ console.error(e); }
-document.getElementById("lookCasual").onclick=()=>av && av.setLook("casual");
-document.getElementById("lookClassico").onclick=()=>av && av.setLook("classico");
+function showLook(key){
+  const img=document.getElementById("lookPhoto");
+  if (window.LOOKS && window.LOOKS[key]) img.src=window.LOOKS[key];
+}
+showLook("casual");
+document.getElementById("lookCasual").onclick=()=>showLook("casual");
+document.getElementById("lookClassico").onclick=()=>showLook("classico");
 </script>
 </body></html>
