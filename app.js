@@ -1,5 +1,5 @@
 const CATS=["Tutti","Camicie","Maglie","Pantaloni","Gonne","Abiti","Giacche","Cappotti","Scarpe","Borse","Accessori"];
-const KEY="cabina.v1";
+const KEY="cabina.v3";
 const $=s=>document.querySelector(s);
 const $$=s=>[...document.querySelectorAll(s)];
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{items:[],looks:[]}}catch{return{items:[],looks:[]}}}
@@ -16,14 +16,14 @@ FEATURED.forEach(f=>{
   const photo=(window.ITEM_PHOTOS&&window.ITEM_PHOTOS[f.id])||"";
   const existing=db.items.find(i=>i.id===f.id);
   if(!existing) db.items.unshift({...f,photo,created:Date.now()});
-  else existing.photo=photo||existing.photo;
+  else { existing.photo=photo||existing.photo; existing.name=f.name; existing.note=f.note; existing.cat=f.cat; existing.model=f.model||existing.model; }
 });
 save(db);
 let filter="Tutti",pickSlot=null,lookDraft={top:null,bottom:null,shoes:null,bag:null},closet3d=null;
 const uid=()=>Math.random().toString(36).slice(2,10);
 function enhanceAndCutout(file){return new Promise((resolve,reject)=>{const img=new Image();const url=URL.createObjectURL(file);img.onload=()=>{const max=900;let w=img.width,h=img.height;if(w>max||h>max){const r=Math.min(max/w,max/h);w=Math.round(w*r);h=Math.round(h*r)}const c=document.createElement("canvas");c.width=w;c.height=h;const ctx=c.getContext("2d");ctx.drawImage(img,0,0,w,h);URL.revokeObjectURL(url);resolve(c.toDataURL("image/jpeg",0.8))};img.onerror=reject;img.src=url})}
 function stats(){$("#nItems").textContent=db.items.length;$("#nFav").textContent=db.items.filter(i=>i.fav).length;$("#nOut").textContent=db.looks.length}
-function cardHTML(item){const is3d=item.model==="nb1000"||item.id==="nb1000";return `<article class="card" data-id="${item.id}"><button class="fav" data-fav="${item.id}">${item.fav?"★":"☆"}</button><div class="ph">${item.photo?`<img src="${item.photo}" alt="">`:is3d?"3D 360°":""}</div><div class="meta"><h3>${item.name}</h3><p>${item.cat}${item.note?" · "+item.note:""}</p></div></article>`}
+function cardHTML(item){const is3d=item.model==="nb1000"||item.id==="nb1000";return `<article class="card" data-id="${item.id}"><button class="fav" data-fav="${item.id}">${item.fav?"★":"☆"}</button><div class="ph">${item.photo?`<img src="${item.photo}" alt="${item.name}">`:is3d?"3D 360°":""}</div><div class="meta"><h3>${item.name}</h3><p>${item.cat}${item.note?" · "+item.note:""}</p></div></article>`}
 function visibleItems(){const q=($("#q")?.value||"").toLowerCase();return db.items.filter(i=>(filter==="Tutti"||i.cat===filter)&&(!q||(i.name+" "+i.cat+" "+(i.note||"")).toLowerCase().includes(q)))}
 function renderLooks(){$$(".slot").forEach(s=>{const item=db.items.find(i=>i.id===lookDraft[s.dataset.slot]);s.innerHTML=item?(item.photo?`<img src="${item.photo}" style="max-height:120px">`:item.name):s.dataset.slot});const box=$("#looks");if(!box)return;box.innerHTML=db.looks.map(l=>`<article class="card" data-look="${l.id}"><div class="ph"></div><div class="meta"><h3>${l.name}</h3></div></article>`).join("")||""}
 function renderArmadio(){const chips=$("#chips");if(chips)chips.innerHTML=CATS.map(c=>`<button class="chip ${c===filter?"active":""}" data-cat="${c}">${c}</button>`).join("");const list=visibleItems();const grid=$("#grid");if(grid)grid.innerHTML=list.length?list.map(cardHTML).join(""):`<div class="empty">Nessun capo</div>`;const recent=$("#recentGrid");if(recent)recent.innerHTML=db.items.slice(0,8).map(cardHTML).join("");renderLooks();stats();if(closet3d)closet3d.refresh()}
