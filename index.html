@@ -5,100 +5,77 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a120c" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-  <title>La Mia Cabina — Armadio Digitale</title>
+  <title>La Mia Cabina — 3D</title>
   <link rel="manifest" href="manifest.json" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;0,700;1,400&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
-    :root {
-      --bg: #16100c;
-      --panel: #241c16;
-      --gold: #c9a36a;
-      --gold-2: #e8d5b0;
-      --text: #f6efe6;
-      --muted: #b7a898;
-      --line: rgba(201,163,106,.28);
-      --danger: #c46a5a;
-      --shadow: 0 24px 60px rgba(0,0,0,.45);
-    }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    html, body { height: 100%; }
-    body {
-      font-family: Outfit, system-ui, sans-serif;
-      background:
-        radial-gradient(1200px 700px at 10% -10%, rgba(201,163,106,.12), transparent 50%),
-        radial-gradient(900px 500px at 100% 0%, rgba(107,74,50,.25), transparent 45%),
-        #16100c;
-      color: var(--text);
-      min-height: 100dvh;
-    }
-    button, input, select, textarea { font-family: inherit; }
-    img { max-width: 100%; display: block; }
-    .app { max-width: 1180px; margin: 0 auto; padding: 20px 16px 110px; }
-    header.top { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 22px; }
-    .brand h1 { font-family: "Cormorant Garamond", serif; font-size: clamp(28px, 5vw, 44px); font-weight: 600; letter-spacing: .02em; line-height: 1; }
-    .brand p { color: var(--muted); font-size: 13px; margin-top: 6px; letter-spacing: .12em; text-transform: uppercase; }
-    .stats { display: flex; gap: 10px; flex-wrap: wrap; }
-    .stat { background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.01)); border: 1px solid var(--line); border-radius: 14px; padding: 10px 14px; min-width: 78px; }
-    .stat b { display: block; font-family: "Cormorant Garamond", serif; font-size: 22px; color: var(--gold-2); }
-    .stat span { font-size: 11px; color: var(--muted); letter-spacing: .08em; text-transform: uppercase; }
-    .hero { position: relative; border-radius: 24px; overflow: hidden; min-height: 280px; background: linear-gradient(180deg, rgba(22,16,12,.15), rgba(22,16,12,.72)), linear-gradient(90deg, #3a281c 0%, #2a1d15 40%, #4a3224 100%); border: 1px solid var(--line); box-shadow: var(--shadow); margin-bottom: 22px; }
-    .hero-inner { padding: 28px 24px; position: relative; z-index: 1; }
-    .hero h2 { font-family: "Cormorant Garamond", serif; font-size: clamp(26px, 4vw, 40px); max-width: 14ch; }
-    .hero p { color: var(--gold-2); margin: 10px 0 18px; max-width: 46ch; font-weight: 300; }
-    .zones { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
-    .zone { background: rgba(22,16,12,.45); border: 1px solid var(--line); backdrop-filter: blur(8px); border-radius: 14px; padding: 12px 10px; cursor: pointer; text-align: left; color: var(--text); }
-    .zone:hover { border-color: var(--gold); background: rgba(201,163,106,.12); }
-    .zone strong { display: block; font-size: 13px; }
-    .zone small { color: var(--muted); font-size: 11px; }
-    .toolbar { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-bottom: 16px; }
-    .search { flex: 1; min-width: 180px; background: var(--panel); border: 1px solid var(--line); border-radius: 999px; padding: 11px 16px; color: var(--text); outline: none; }
-    .chips { display: flex; gap: 8px; flex-wrap: wrap; }
-    .chip { border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 999px; padding: 8px 12px; cursor: pointer; font-size: 13px; }
-    .chip.active { background: var(--gold); color: #1a120c; border-color: var(--gold); font-weight: 600; }
-    .btn { border: 0; border-radius: 999px; padding: 11px 16px; cursor: pointer; font-weight: 500; font-size: 14px; }
-    .btn-gold { background: linear-gradient(180deg, #e0c48a, #c9a36a); color: #1a120c; }
-    .btn-ghost { background: transparent; color: var(--gold-2); border: 1px solid var(--line); }
-    .btn-danger { background: transparent; color: var(--danger); border: 1px solid rgba(196,106,90,.4); }
-    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-    .card { background: var(--panel); border: 1px solid var(--line); border-radius: 18px; overflow: hidden; cursor: pointer; position: relative; }
-    .card .ph { aspect-ratio: 3/4; background: #2b2119; display: grid; place-items: center; color: var(--muted); font-size: 12px; overflow: hidden; }
-    .card .ph img { width: 100%; height: 100%; object-fit: cover; }
-    .card .meta { padding: 10px 11px 12px; }
-    .card .meta h3 { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-    .card .meta p { color: var(--muted); font-size: 11px; margin-top: 3px; text-transform: uppercase; letter-spacing: .06em; }
-    .fav { position: absolute; top: 8px; right: 8px; background: rgba(22,16,12,.6); border: 0; color: var(--gold); width: 30px; height: 30px; border-radius: 50%; cursor: pointer; }
-    .empty { text-align: center; padding: 48px 16px; color: var(--muted); border: 1px dashed var(--line); border-radius: 20px; }
-    .empty h3 { color: var(--text); font-family: "Cormorant Garamond", serif; font-size: 28px; margin-bottom: 8px; }
-    .bottom { position: fixed; left: 0; right: 0; bottom: 0; background: rgba(22,16,12,.86); backdrop-filter: blur(16px); border-top: 1px solid var(--line); display: grid; grid-template-columns: repeat(4, 1fr); padding: 8px 8px calc(8px + env(safe-area-inset-bottom)); z-index: 20; }
-    .tab { background: none; border: 0; color: var(--muted); padding: 8px; cursor: pointer; font-size: 11px; letter-spacing: .06em; text-transform: uppercase; }
-    .tab.active { color: var(--gold-2); }
-    .tab span { display: block; font-size: 18px; margin-bottom: 2px; }
-    dialog { border: 1px solid var(--line); border-radius: 22px; background: #1c1510; color: var(--text); width: min(520px, calc(100vw - 24px)); padding: 0; box-shadow: var(--shadow); }
-    dialog::backdrop { background: rgba(0,0,0,.62); }
-    .dlg { padding: 20px; }
-    .dlg h3 { font-family: "Cormorant Garamond", serif; font-size: 28px; margin-bottom: 12px; }
-    .form { display: grid; gap: 10px; }
-    .form label { font-size: 12px; color: var(--muted); }
-    .form input, .form select, .form textarea { width: 100%; background: #2a211a; border: 1px solid var(--line); border-radius: 12px; padding: 11px 12px; color: var(--text); outline: none; }
-    .preview { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 14px; background: #2a211a; }
-    .row { display: flex; gap: 8px; justify-content: flex-end; margin-top: 8px; flex-wrap: wrap; }
-    .outfit { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-    .slot { min-height: 170px; border: 1px dashed var(--line); border-radius: 18px; background: var(--panel); display: flex; flex-direction: column; align-items: center; justify-content: center; color: var(--muted); overflow: hidden; cursor: pointer; }
-    .slot img { width: 100%; height: 190px; object-fit: cover; }
-    .slot .lab { padding: 8px; font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
-    @media (max-width: 720px) { .zones { grid-template-columns: 1fr 1fr; } header.top { align-items: flex-start; flex-direction: column; } }
+    :root { --bg:#16100c; --panel:#241c16; --gold:#c9a36a; --gold-2:#e8d5b0; --text:#f6efe6; --muted:#b7a898; --line:rgba(201,163,106,.28); --danger:#c46a5a; }
+    * { box-sizing:border-box; margin:0; padding:0; }
+    html, body { height:100%; }
+    body { font-family:Outfit,system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; }
+    button,input,select { font-family:inherit; }
+    img { max-width:100%; display:block; }
+    .app { max-width:1180px; margin:0 auto; padding:16px 16px 110px; }
+    header.top { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:14px; }
+    .brand h1 { font-family:"Cormorant Garamond",serif; font-size:clamp(28px,5vw,42px); font-weight:600; line-height:1; }
+    .brand p { color:var(--muted); font-size:12px; margin-top:6px; letter-spacing:.12em; text-transform:uppercase; }
+    .stats { display:flex; gap:8px; flex-wrap:wrap; }
+    .stat { border:1px solid var(--line); border-radius:14px; padding:8px 12px; min-width:70px; }
+    .stat b { display:block; font-family:"Cormorant Garamond",serif; font-size:20px; color:var(--gold-2); }
+    .stat span { font-size:10px; color:var(--muted); letter-spacing:.08em; text-transform:uppercase; }
+    .stage { position:relative; border-radius:22px; overflow:hidden; border:1px solid var(--line); height:min(62vh,560px); background:#120e0b; margin-bottom:14px; }
+    #view3d { width:100%; height:100%; display:block; touch-action:none; }
+    .stage-ui { position:absolute; left:12px; right:12px; bottom:12px; display:flex; gap:8px; flex-wrap:wrap; }
+    .hint { position:absolute; top:12px; left:12px; right:12px; color:var(--gold-2); font-size:13px; text-shadow:0 2px 10px #000; z-index:2; }
+    .toolbar { display:flex; gap:10px; flex-wrap:wrap; align-items:center; margin-bottom:16px; }
+    .search { flex:1; min-width:180px; background:var(--panel); border:1px solid var(--line); border-radius:999px; padding:11px 16px; color:var(--text); outline:none; }
+    .chips { display:flex; gap:8px; flex-wrap:wrap; }
+    .chip { border:1px solid var(--line); background:transparent; color:var(--muted); border-radius:999px; padding:8px 12px; cursor:pointer; font-size:13px; }
+    .chip.active { background:var(--gold); color:#1a120c; border-color:var(--gold); font-weight:600; }
+    .btn { border:0; border-radius:999px; padding:11px 16px; cursor:pointer; font-weight:500; font-size:14px; }
+    .btn-gold { background:linear-gradient(180deg,#e0c48a,#c9a36a); color:#1a120c; }
+    .btn-ghost { background:rgba(22,16,12,.72); color:var(--gold-2); border:1px solid var(--line); }
+    .btn-danger { background:transparent; color:var(--danger); border:1px solid rgba(196,106,90,.4); }
+    .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+    .card { background:var(--panel); border:1px solid var(--line); border-radius:18px; overflow:hidden; cursor:pointer; position:relative; }
+    .card .ph { aspect-ratio:3/4; background:#2b2119; display:grid; place-items:center; color:var(--muted); font-size:12px; overflow:hidden; }
+    .card .ph img { width:100%; height:100%; object-fit:contain; background:#1a140f; }
+    .card .meta { padding:10px 11px 12px; }
+    .card .meta h3 { font-size:14px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .card .meta p { color:var(--muted); font-size:11px; margin-top:3px; text-transform:uppercase; letter-spacing:.06em; }
+    .fav { position:absolute; top:8px; right:8px; background:rgba(22,16,12,.6); border:0; color:var(--gold); width:30px; height:30px; border-radius:50%; cursor:pointer; }
+    .empty { text-align:center; padding:48px 16px; color:var(--muted); border:1px dashed var(--line); border-radius:20px; }
+    .empty h3 { color:var(--text); font-family:"Cormorant Garamond",serif; font-size:26px; margin-bottom:8px; }
+    .bottom { position:fixed; left:0; right:0; bottom:0; background:rgba(22,16,12,.88); backdrop-filter:blur(16px); border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(4,1fr); padding:8px 8px calc(8px + env(safe-area-inset-bottom)); z-index:20; }
+    .tab { background:none; border:0; color:var(--muted); padding:8px; cursor:pointer; font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
+    .tab.active { color:var(--gold-2); }
+    .tab span { display:block; font-size:18px; margin-bottom:2px; }
+    dialog { border:1px solid var(--line); border-radius:22px; background:#1c1510; color:var(--text); width:min(520px,calc(100vw - 24px)); padding:0; }
+    dialog::backdrop { background:rgba(0,0,0,.62); }
+    .dlg { padding:20px; }
+    .dlg h3 { font-family:"Cormorant Garamond",serif; font-size:28px; margin-bottom:12px; }
+    .form { display:grid; gap:10px; }
+    .form label { font-size:12px; color:var(--muted); }
+    .form input, .form select { width:100%; background:#2a211a; border:1px solid var(--line); border-radius:12px; padding:11px 12px; color:var(--text); outline:none; }
+    .preview { width:100%; max-height:240px; object-fit:contain; border-radius:14px; background:#2a211a; }
+    .row { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; flex-wrap:wrap; }
+    .outfit { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+    .slot { min-height:170px; border:1px dashed var(--line); border-radius:18px; background:var(--panel); display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--muted); overflow:hidden; cursor:pointer; }
+    .slot img { width:100%; height:190px; object-fit:contain; }
+    .slot .lab { padding:8px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
+    .zones { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0 16px; }
+    .zone { background:rgba(36,28,22,.8); border:1px solid var(--line); border-radius:14px; padding:12px 10px; cursor:pointer; text-align:left; color:var(--text); }
+    .zone strong { display:block; font-size:13px; }
+    .zone small { color:var(--muted); font-size:11px; }
+    @media (max-width:720px){ .zones{grid-template-columns:1fr 1fr;} header.top{flex-direction:column;align-items:flex-start;} }
   </style>
 </head>
 <body>
   <div class="app">
     <header class="top">
-      <div class="brand">
-        <h1>La Mia Cabina</h1>
-        <p>Armadio digitale personale</p>
-      </div>
+      <div class="brand"><h1>La Mia Cabina</h1><p>Vista 3D in movimento</p></div>
       <div class="stats">
         <div class="stat"><b id="nItems">0</b><span>Capi</span></div>
         <div class="stat"><b id="nFav">0</b><span>Preferiti</span></div>
@@ -106,21 +83,19 @@
       </div>
     </header>
     <section id="view-home">
-      <div class="hero">
-        <div class="hero-inner">
-          <h2>La tua cabina, i tuoi vestiti.</h2>
-          <p>Fotografa ogni capo e sistemalo nella zona giusta: aste, ripiani, scarpe, borse. Poi crea i look.</p>
-          <div class="zones">
-            <button class="zone" data-cat="Camicie"><strong>Aste corte</strong><small>Camicie e maglie</small></button>
-            <button class="zone" data-cat="Abiti"><strong>Aste lunghe</strong><small>Abiti e cappotti</small></button>
-            <button class="zone" data-cat="Scarpe"><strong>Scarpiera</strong><small>Scarpe e sneakers</small></button>
-            <button class="zone" data-cat="Borse"><strong>Vetrina</strong><small>Borse e accessori</small></button>
-          </div>
+      <div class="stage">
+        <div class="hint">Trascina per girare attorno alla cabina. I capi dondolano da soli.</div>
+        <canvas id="view3d"></canvas>
+        <div class="stage-ui">
+          <button class="btn btn-gold" id="btnAdd">+ Appendi un tuo capo</button>
+          <button class="btn btn-ghost" id="btnMotion">Pausa movimento</button>
         </div>
       </div>
-      <div class="toolbar">
-        <button class="btn btn-gold" id="btnAdd">+ Aggiungi un tuo capo</button>
-        <button class="btn btn-ghost" id="btnDemo">Esempi di partenza</button>
+      <div class="zones">
+        <button class="zone" data-cat="Camicie"><strong>Aste corte</strong><small>Camicie e maglie</small></button>
+        <button class="zone" data-cat="Abiti"><strong>Aste lunghe</strong><small>Abiti e cappotti</small></button>
+        <button class="zone" data-cat="Scarpe"><strong>Scarpiera LED</strong><small>Scarpe</small></button>
+        <button class="zone" data-cat="Borse"><strong>Isola / vetrina</strong><small>Borse</small></button>
       </div>
       <div id="recentGrid" class="grid"></div>
     </section>
@@ -135,7 +110,7 @@
     </section>
     <section id="view-look" hidden>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:8px;">Componi un look</h2>
-      <p style="color:var(--muted);margin-bottom:16px;">Tocca uno slot e scegli tra i capi che hai caricato.</p>
+      <p style="color:var(--muted);margin-bottom:16px;">Tocca uno slot e scegli tra i capi caricati.</p>
       <div class="outfit">
         <div class="slot" data-slot="top"><div class="lab">Sopra</div></div>
         <div class="slot" data-slot="bottom"><div class="lab">Sotto / Abito</div></div>
@@ -150,56 +125,36 @@
       <div id="looks" class="grid"></div>
     </section>
     <section id="view-info" hidden>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:10px;">Come usarla</h2>
-      <p style="color:var(--muted);line-height:1.7;max-width:62ch;">
-        Questa è la tua cabina armadio digitale. Le foto dei vestiti restano <b style="color:var(--gold-2)">solo su questo dispositivo</b> (non vengono inviate a nessun server).
-        Per un risultato bello: scatta il capo su sfondo neutro, luce naturale, steso o appeso.
-        Puoi aggiungere l’app alla schermata Home del telefono: menù del browser → Aggiungi a Home.
-      </p>
-      <div class="row" style="justify-content:flex-start;margin-top:18px;">
-        <button class="btn btn-danger" id="wipe">Cancella tutti i dati locali</button>
-      </div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:10px;">Foto perfetta per il 3D</h2>
+      <p style="color:var(--muted);line-height:1.7;max-width:62ch;">Scatta il capo su <b style="color:var(--gold-2)">sfondo bianco o chiaro</b>, luce naturale, vestito steso o appeso. L’app toglie lo sfondo, alza il contrasto e lo posiziona sulla mensola o sull’asta giusta. Trascina nella vista 3D per girare. I capi si muovono leggermente come appesi. I dati restano solo su questo dispositivo.</p>
+      <div class="row" style="justify-content:flex-start;margin-top:18px;"><button class="btn btn-danger" id="wipe">Cancella tutti i dati locali</button></div>
     </section>
   </div>
   <nav class="bottom">
-    <button class="tab active" data-view="home"><span>⌂</span>Cabina</button>
+    <button class="tab active" data-view="home"><span>◈</span>3D</button>
     <button class="tab" data-view="armadio"><span>☰</span>Vestiti</button>
     <button class="tab" data-view="look"><span>✦</span>Look</button>
     <button class="tab" data-view="info"><span>i</span>Info</button>
   </nav>
   <dialog id="dlgItem">
     <div class="dlg">
-      <h3 id="dlgTitle">Nuovo capo</h3>
+      <h3 id="dlgTitle">Nuovo capo 3D</h3>
       <form class="form" id="formItem">
         <input type="hidden" id="itemId" />
         <img class="preview" id="preview" alt="" />
-        <label>Foto del capo
-          <input type="file" id="photo" accept="image/*" capture="environment" />
-        </label>
-        <label>Nome
-          <input id="name" placeholder="Es. Camicia bianca lino" required />
-        </label>
+        <p id="statusFoto" style="color:var(--gold-2);font-size:13px;"></p>
+        <label>Foto del capo<input type="file" id="photo" accept="image/*" capture="environment" /></label>
+        <label>Nome<input id="name" placeholder="Es. Camicia bianca lino" required /></label>
         <label>Categoria
           <select id="cat">
-            <option>Camicie</option>
-            <option>Maglie</option>
-            <option>Pantaloni</option>
-            <option>Gonne</option>
-            <option>Abiti</option>
-            <option>Giacche</option>
-            <option>Cappotti</option>
-            <option>Scarpe</option>
-            <option>Borse</option>
-            <option>Accessori</option>
+            <option>Camicie</option><option>Maglie</option><option>Pantaloni</option><option>Gonne</option><option>Abiti</option><option>Giacche</option><option>Cappotti</option><option>Scarpe</option><option>Borse</option><option>Accessori</option>
           </select>
         </label>
-        <label>Colore / stagione
-          <input id="note" placeholder="Es. bianco, estate, cerimonia" />
-        </label>
+        <label>Colore / stagione<input id="note" placeholder="Es. bianco, estate" /></label>
         <div class="row">
           <button type="button" class="btn btn-danger" id="delItem" hidden>Elimina</button>
           <button type="button" class="btn btn-ghost" id="cancelItem">Chiudi</button>
-          <button type="submit" class="btn btn-gold">Salva</button>
+          <button type="submit" class="btn btn-gold">Metti in cabina</button>
         </div>
       </form>
     </div>
@@ -212,5 +167,11 @@
     </div>
   </dialog>
   <script src="app.js"></script>
+  <script type="module">
+    import { initCloset3D } from "./scene3d.js";
+    const canvas = document.getElementById("view3d");
+    const api = initCloset3D(canvas, () => window.__cabinaItems ? window.__cabinaItems() : []);
+    if (window.__cabinaReady) window.__cabinaReady(api);
+  </script>
 </body>
 </html>
