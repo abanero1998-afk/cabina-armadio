@@ -12,7 +12,12 @@ const FEATURED=[
   {id:"cam-fiori",name:"Camicia fiori celeste slim",cat:"Camicie",note:"taglia 37",fav:false},
   {id:"pant-blu",name:"Pantaloni classici blu",cat:"Pantaloni",note:"taglia 44",fav:false}
 ];
-FEATURED.forEach(f=>{if(!db.items.some(i=>i.id===f.id))db.items.unshift({...f,photo:"",created:Date.now()})});
+FEATURED.forEach(f=>{
+  const photo=(window.ITEM_PHOTOS&&window.ITEM_PHOTOS[f.id])||"";
+  const existing=db.items.find(i=>i.id===f.id);
+  if(!existing) db.items.unshift({...f,photo,created:Date.now()});
+  else existing.photo=photo||existing.photo;
+});
 save(db);
 let filter="Tutti",pickSlot=null,lookDraft={top:null,bottom:null,shoes:null,bag:null},closet3d=null;
 const uid=()=>Math.random().toString(36).slice(2,10);
@@ -20,7 +25,7 @@ function enhanceAndCutout(file){return new Promise((resolve,reject)=>{const img=
 function stats(){$("#nItems").textContent=db.items.length;$("#nFav").textContent=db.items.filter(i=>i.fav).length;$("#nOut").textContent=db.looks.length}
 function cardHTML(item){const is3d=item.model==="nb1000"||item.id==="nb1000";return `<article class="card" data-id="${item.id}"><button class="fav" data-fav="${item.id}">${item.fav?"★":"☆"}</button><div class="ph">${item.photo?`<img src="${item.photo}" alt="">`:is3d?"3D 360°":""}</div><div class="meta"><h3>${item.name}</h3><p>${item.cat}${item.note?" · "+item.note:""}</p></div></article>`}
 function visibleItems(){const q=($("#q")?.value||"").toLowerCase();return db.items.filter(i=>(filter==="Tutti"||i.cat===filter)&&(!q||(i.name+" "+i.cat+" "+(i.note||"")).toLowerCase().includes(q)))}
-function renderLooks(){$$(".slot").forEach(s=>{const item=db.items.find(i=>i.id===lookDraft[s.dataset.slot]);s.innerHTML=item?item.name:s.dataset.slot});const box=$("#looks");if(!box)return;box.innerHTML=db.looks.map(l=>`<article class="card" data-look="${l.id}"><div class="ph"></div><div class="meta"><h3>${l.name}</h3></div></article>`).join("")||""}
+function renderLooks(){$$(".slot").forEach(s=>{const item=db.items.find(i=>i.id===lookDraft[s.dataset.slot]);s.innerHTML=item?(item.photo?`<img src="${item.photo}" style="max-height:120px">`:item.name):s.dataset.slot});const box=$("#looks");if(!box)return;box.innerHTML=db.looks.map(l=>`<article class="card" data-look="${l.id}"><div class="ph"></div><div class="meta"><h3>${l.name}</h3></div></article>`).join("")||""}
 function renderArmadio(){const chips=$("#chips");if(chips)chips.innerHTML=CATS.map(c=>`<button class="chip ${c===filter?"active":""}" data-cat="${c}">${c}</button>`).join("");const list=visibleItems();const grid=$("#grid");if(grid)grid.innerHTML=list.length?list.map(cardHTML).join(""):`<div class="empty">Nessun capo</div>`;const recent=$("#recentGrid");if(recent)recent.innerHTML=db.items.slice(0,8).map(cardHTML).join("");renderLooks();stats();if(closet3d)closet3d.refresh()}
 function showView(name){["home","armadio","avatar","look","info"].forEach(v=>{const el=$("#view-"+v);if(el)el.hidden=v!==name});$$(".tab").forEach(t=>t.classList.toggle("active",t.dataset.view===name))}
 function openItem(item){$("#itemId").value=item?.id||"";$("#dlgTitle").textContent=item?"Modifica":"Nuovo capo";$("#name").value=item?.name||"";$("#cat").value=item?.cat||"Camicie";$("#note").value=item?.note||"";$("#preview").src=item?.photo||"";$("#delItem").hidden=!item;$("#dlgItem").showModal()}
