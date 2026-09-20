@@ -4,19 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#1a120c" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
   <title>La Mia Cabina — 3D</title>
   <link rel="manifest" href="manifest.json" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet" />
   <style>
     :root { --bg:#16100c; --panel:#241c16; --gold:#c9a36a; --gold-2:#e8d5b0; --text:#f6efe6; --muted:#b7a898; --line:rgba(201,163,106,.28); --danger:#c46a5a; }
     * { box-sizing:border-box; margin:0; padding:0; }
-    html, body { height:100%; }
     body { font-family:Outfit,system-ui,sans-serif; background:var(--bg); color:var(--text); min-height:100dvh; }
-    button,input,select { font-family:inherit; }
-    img { max-width:100%; display:block; }
+    button,input,select { font-family:inherit; } img { max-width:100%; display:block; }
     .app { max-width:1180px; margin:0 auto; padding:16px 16px 110px; }
     header.top { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:14px; }
     .brand h1 { font-family:"Cormorant Garamond",serif; font-size:clamp(28px,5vw,42px); font-weight:600; line-height:1; }
@@ -50,25 +45,21 @@
     .empty h3 { color:var(--text); font-family:"Cormorant Garamond",serif; font-size:26px; margin-bottom:8px; }
     .bottom { position:fixed; left:0; right:0; bottom:0; background:rgba(22,16,12,.88); backdrop-filter:blur(16px); border-top:1px solid var(--line); display:grid; grid-template-columns:repeat(4,1fr); padding:8px 8px calc(8px + env(safe-area-inset-bottom)); z-index:20; }
     .tab { background:none; border:0; color:var(--muted); padding:8px; cursor:pointer; font-size:11px; letter-spacing:.06em; text-transform:uppercase; }
-    .tab.active { color:var(--gold-2); }
-    .tab span { display:block; font-size:18px; margin-bottom:2px; }
+    .tab.active { color:var(--gold-2); } .tab span { display:block; font-size:18px; margin-bottom:2px; }
     dialog { border:1px solid var(--line); border-radius:22px; background:#1c1510; color:var(--text); width:min(520px,calc(100vw - 24px)); padding:0; }
     dialog::backdrop { background:rgba(0,0,0,.62); }
-    .dlg { padding:20px; }
-    .dlg h3 { font-family:"Cormorant Garamond",serif; font-size:28px; margin-bottom:12px; }
-    .form { display:grid; gap:10px; }
-    .form label { font-size:12px; color:var(--muted); }
+    .dlg { padding:20px; } .form { display:grid; gap:10px; }
     .form input, .form select { width:100%; background:#2a211a; border:1px solid var(--line); border-radius:12px; padding:11px 12px; color:var(--text); outline:none; }
     .preview { width:100%; max-height:240px; object-fit:contain; border-radius:14px; background:#2a211a; }
     .row { display:flex; gap:8px; justify-content:flex-end; margin-top:8px; flex-wrap:wrap; }
     .outfit { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
     .slot { min-height:170px; border:1px dashed var(--line); border-radius:18px; background:var(--panel); display:flex; flex-direction:column; align-items:center; justify-content:center; color:var(--muted); overflow:hidden; cursor:pointer; }
     .slot img { width:100%; height:190px; object-fit:contain; }
-    .slot .lab { padding:8px; font-size:12px; text-transform:uppercase; letter-spacing:.08em; }
     .zones { display:grid; grid-template-columns:repeat(4,1fr); gap:8px; margin:8px 0 16px; }
     .zone { background:rgba(36,28,22,.8); border:1px solid var(--line); border-radius:14px; padding:12px 10px; cursor:pointer; text-align:left; color:var(--text); }
-    .zone strong { display:block; font-size:13px; }
-    .zone small { color:var(--muted); font-size:11px; }
+    .model-badge { color:var(--gold-2); font-size:18px; letter-spacing:.12em; }
+    #dlg360 { width:min(720px, calc(100vw - 16px)); max-width:none; background:#120e0b; }
+    #view360 { width:100%; height:min(70vh,520px); display:block; border-radius:16px; background:#14100c; }
     @media (max-width:720px){ .zones{grid-template-columns:1fr 1fr;} header.top{flex-direction:column;align-items:flex-start;} }
   </style>
 </head>
@@ -84,10 +75,11 @@
     </header>
     <section id="view-home">
       <div class="stage">
-        <div class="hint">Trascina per girare attorno alla cabina. I capi dondolano da soli.</div>
+        <div class="hint">Trascina per girare la cabina. Tocca NB 1000 per il modello 360°.</div>
         <canvas id="view3d"></canvas>
         <div class="stage-ui">
           <button class="btn btn-gold" id="btnAdd">+ Appendi un tuo capo</button>
+          <button class="btn btn-ghost" id="btn360">NB 1000 · 360°</button>
           <button class="btn btn-ghost" id="btnMotion">Pausa movimento</button>
         </div>
       </div>
@@ -110,24 +102,22 @@
     </section>
     <section id="view-look" hidden>
       <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:8px;">Componi un look</h2>
-      <p style="color:var(--muted);margin-bottom:16px;">Tocca uno slot e scegli tra i capi caricati.</p>
       <div class="outfit">
         <div class="slot" data-slot="top"><div class="lab">Sopra</div></div>
         <div class="slot" data-slot="bottom"><div class="lab">Sotto / Abito</div></div>
         <div class="slot" data-slot="shoes"><div class="lab">Scarpe</div></div>
-        <div class="slot" data-slot="bag"><div class="lab">Borsa / Accessorio</div></div>
+        <div class="slot" data-slot="bag"><div class="lab">Borsa</div></div>
       </div>
       <div class="row" style="justify-content:flex-start;margin-top:16px;">
         <button class="btn btn-gold" id="saveLook">Salva look</button>
         <button class="btn btn-ghost" id="clearLook">Svuota</button>
       </div>
-      <h3 style="margin:28px 0 12px;font-family:'Cormorant Garamond',serif;font-size:26px;">Look salvati</h3>
       <div id="looks" class="grid"></div>
     </section>
     <section id="view-info" hidden>
-      <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:10px;">Foto perfetta per il 3D</h2>
-      <p style="color:var(--muted);line-height:1.7;max-width:62ch;">Scatta il capo su <b style="color:var(--gold-2)">sfondo bianco o chiaro</b>, luce naturale, vestito steso o appeso. L’app toglie lo sfondo, alza il contrasto e lo posiziona sulla mensola o sull’asta giusta. Trascina nella vista 3D per girare. I capi si muovono leggermente come appesi. I dati restano solo su questo dispositivo.</p>
-      <div class="row" style="justify-content:flex-start;margin-top:18px;"><button class="btn btn-danger" id="wipe">Cancella tutti i dati locali</button></div>
+      <h2 style="font-family:'Cormorant Garamond',serif;font-size:32px;margin-bottom:10px;">New Balance 1000</h2>
+      <p style="color:var(--muted);line-height:1.7;">Modello 3D rotabile a 360° delle tue NB 1000 nere (M1000A black/grey). Trascina per girarle. I dati restano sul dispositivo.</p>
+      <button class="btn btn-danger" id="wipe">Cancella dati locali</button>
     </section>
   </div>
   <nav class="bottom">
@@ -136,42 +126,46 @@
     <button class="tab" data-view="look"><span>✦</span>Look</button>
     <button class="tab" data-view="info"><span>i</span>Info</button>
   </nav>
-  <dialog id="dlgItem">
-    <div class="dlg">
-      <h3 id="dlgTitle">Nuovo capo 3D</h3>
-      <form class="form" id="formItem">
-        <input type="hidden" id="itemId" />
-        <img class="preview" id="preview" alt="" />
-        <p id="statusFoto" style="color:var(--gold-2);font-size:13px;"></p>
-        <label>Foto del capo<input type="file" id="photo" accept="image/*" capture="environment" /></label>
-        <label>Nome<input id="name" placeholder="Es. Camicia bianca lino" required /></label>
-        <label>Categoria
-          <select id="cat">
-            <option>Camicie</option><option>Maglie</option><option>Pantaloni</option><option>Gonne</option><option>Abiti</option><option>Giacche</option><option>Cappotti</option><option>Scarpe</option><option>Borse</option><option>Accessori</option>
-          </select>
-        </label>
-        <label>Colore / stagione<input id="note" placeholder="Es. bianco, estate" /></label>
-        <div class="row">
-          <button type="button" class="btn btn-danger" id="delItem" hidden>Elimina</button>
-          <button type="button" class="btn btn-ghost" id="cancelItem">Chiudi</button>
-          <button type="submit" class="btn btn-gold">Metti in cabina</button>
-        </div>
-      </form>
+  <dialog id="dlgItem"><div class="dlg">
+    <h3 id="dlgTitle">Nuovo capo 3D</h3>
+    <form class="form" id="formItem">
+      <input type="hidden" id="itemId" /><img class="preview" id="preview" alt="" />
+      <p id="statusFoto" style="color:var(--gold-2);font-size:13px;"></p>
+      <label>Foto<input type="file" id="photo" accept="image/*" capture="environment" /></label>
+      <label>Nome<input id="name" required /></label>
+      <label>Categoria<select id="cat"><option>Camicie</option><option>Maglie</option><option>Pantaloni</option><option>Gonne</option><option>Abiti</option><option>Giacche</option><option>Cappotti</option><option>Scarpe</option><option>Borse</option><option>Accessori</option></select></label>
+      <label>Note<input id="note" /></label>
+      <div class="row"><button type="button" class="btn btn-danger" id="delItem" hidden>Elimina</button><button type="button" class="btn btn-ghost" id="cancelItem">Chiudi</button><button type="submit" class="btn btn-gold">Salva</button></div>
+    </form></div></dialog>
+  <dialog id="dlgPick"><div class="dlg"><h3>Scegli un capo</h3><div id="pickGrid" class="grid"></div><div class="row"><button class="btn btn-ghost" id="closePick">Chiudi</button></div></div></dialog>
+  <dialog id="dlg360"><div class="dlg">
+    <h3 style="font-family:'Cormorant Garamond',serif;font-size:28px;">New Balance 1000 nere</h3>
+    <p style="color:var(--muted);font-size:13px;margin:8px 0;">Trascina per ruotare a 360° · M1000A black/grey</p>
+    <canvas id="view360"></canvas>
+    <div class="row" style="justify-content:space-between;margin-top:10px;">
+      <button class="btn btn-ghost" id="btn360spin">Pausa rotazione</button>
+      <button class="btn btn-gold" id="close360">Chiudi</button>
     </div>
-  </dialog>
-  <dialog id="dlgPick">
-    <div class="dlg">
-      <h3>Scegli un capo</h3>
-      <div id="pickGrid" class="grid"></div>
-      <div class="row"><button class="btn btn-ghost" id="closePick">Chiudi</button></div>
-    </div>
-  </dialog>
+  </div></dialog>
   <script src="app.js"></script>
   <script type="module">
     import { initCloset3D } from "./scene3d.js";
-    const canvas = document.getElementById("view3d");
-    const api = initCloset3D(canvas, () => window.__cabinaItems ? window.__cabinaItems() : []);
+    import { initShoe360 } from "./shoe3d.js";
+    const api = initCloset3D(document.getElementById("view3d"), () => window.__cabinaItems ? window.__cabinaItems() : []);
     if (window.__cabinaReady) window.__cabinaReady(api);
+    let shoeApi = null;
+    function open360() {
+      document.getElementById("dlg360").showModal();
+      if (shoeApi) shoeApi.dispose();
+      shoeApi = initShoe360(document.getElementById("view360"));
+    }
+    window.__open360 = open360;
+    document.getElementById("btn360").onclick = open360;
+    document.getElementById("close360").onclick = () => document.getElementById("dlg360").close();
+    document.getElementById("btn360spin").onclick = () => {
+      if (!shoeApi) return;
+      const on = !shoeApi.isMoving(); shoeApi.setMotion(on);
+      document.getElementById("btn360spin").textContent = on ? "Pausa rotazione" : "Riprendi rotazione";
+    };
   </script>
-</body>
-</html>
+</body></html>
