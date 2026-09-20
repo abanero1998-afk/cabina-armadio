@@ -6,6 +6,14 @@
 <title>La Mia Cabina — 3D</title>
 <link rel="manifest" href="manifest.json" />
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@600&family=Outfit:wght@400;500&display=swap" rel="stylesheet" />
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+    "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+  }
+}
+</script>
 <style>
 :root{--bg:#16100c;--panel:#241c16;--gold:#c9a36a;--gold-2:#e8d5b0;--text:#f6efe6;--muted:#b7a898;--line:rgba(201,163,106,.28);--danger:#c46a5a}
 *{box-sizing:border-box;margin:0;padding:0}body{font-family:Outfit,system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100dvh}
@@ -15,10 +23,11 @@ header.top{display:flex;justify-content:space-between;gap:12px;margin-bottom:14p
 .brand p{color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
 .stats{display:flex;gap:8px}.stat{border:1px solid var(--line);border-radius:14px;padding:8px 12px}
 .stat b{display:block;font-family:"Cormorant Garamond",serif;font-size:20px;color:var(--gold-2)}
+.stat span{font-size:10px;color:var(--muted);text-transform:uppercase}
 .stage{position:relative;border-radius:22px;overflow:hidden;border:1px solid var(--line);height:min(58vh,520px);background:#120e0b;margin-bottom:14px}
 canvas{width:100%;height:100%;display:block;touch-action:none}
-.stage-ui{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;flex-wrap:wrap}
-.hint{position:absolute;top:12px;left:12px;color:var(--gold-2);font-size:13px;text-shadow:0 2px 8px #000;z-index:2}
+.stage-ui{position:absolute;left:12px;right:12px;bottom:12px;display:flex;gap:8px;flex-wrap:wrap;z-index:3}
+.hint{position:absolute;top:12px;left:12px;right:12px;color:var(--gold-2);font-size:13px;text-shadow:0 2px 8px #000;z-index:2}
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}
 .btn{border:0;border-radius:999px;padding:11px 16px;cursor:pointer;font-weight:500}
 .btn-gold{background:linear-gradient(180deg,#e0c48a,#c9a36a);color:#1a120c}
@@ -26,22 +35,22 @@ canvas{width:100%;height:100%;display:block;touch-action:none}
 .btn-danger{background:transparent;color:var(--danger);border:1px solid rgba(196,106,90,.4)}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:18px;overflow:hidden;cursor:pointer;position:relative}
-.card .ph{aspect-ratio:3/4;background:#2b2119;display:grid;place-items:center;color:var(--muted);font-size:12px}
+.card .ph{aspect-ratio:3/4;display:grid;place-items:center;color:#1a120c;font-size:12px;font-weight:600;text-align:center;padding:8px}
 .card .meta{padding:10px}.card .meta h3{font-size:14px}.card .meta p{color:var(--muted);font-size:11px;margin-top:3px}
 .fav{position:absolute;top:8px;right:8px;background:rgba(22,16,12,.6);border:0;color:var(--gold);width:30px;height:30px;border-radius:50%}
-.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(22,16,12,.9);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:20}
-.tab{background:none;border:0;color:var(--muted);padding:8px 4px;font-size:10px;text-transform:uppercase;letter-spacing:.04em}
+.bottom{position:fixed;left:0;right:0;bottom:0;background:rgba(22,16,12,.92);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:8px 4px calc(8px + env(safe-area-inset-bottom));z-index:20}
+.tab{background:none;border:0;color:var(--muted);padding:8px 4px;font-size:10px;text-transform:uppercase}
 .tab.active{color:var(--gold-2)}.tab span{display:block;font-size:16px}
 .search{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--line);border-radius:999px;padding:11px 16px;color:var(--text)}
-.chips{display:flex;gap:8px;flex-wrap:wrap}.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 12px}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.chip{border:1px solid var(--line);background:transparent;color:var(--muted);border-radius:999px;padding:8px 12px}
 .chip.active{background:var(--gold);color:#1a120c}
 dialog{border:1px solid var(--line);border-radius:22px;background:#1c1510;color:var(--text);width:min(720px,calc(100vw - 16px));padding:0}
 dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 .form{display:grid;gap:10px}.form input,.form select{width:100%;background:#2a211a;border:1px solid var(--line);border-radius:12px;padding:11px;color:var(--text)}
-.preview{width:100%;max-height:220px;object-fit:contain;border-radius:12px}
+.preview{width:100%;max-height:220px;object-fit:contain}
 .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
 .outfit{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.slot{min-height:150px;border:1px dashed var(--line);border-radius:16px;background:var(--panel);display:flex;align-items:center;justify-content:center;color:var(--muted)}
+.slot{min-height:140px;border:1px dashed var(--line);border-radius:16px;background:var(--panel);display:flex;align-items:center;justify-content:center;color:var(--muted)}
 .zones{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:8px 0 16px}
 .zone{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px;color:var(--text);text-align:left}
 #view360,#viewAvatar{height:min(62vh,500px)}
@@ -52,7 +61,7 @@ dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 <header class="top"><div class="brand"><h1>La Mia Cabina</h1><p>Avatar 3D + armadio</p></div>
 <div class="stats"><div class="stat"><b id="nItems">0</b><span>Capi</span></div><div class="stat"><b id="nFav">0</b><span>Pref.</span></div><div class="stat"><b id="nOut">0</b><span>Look</span></div></div></header>
 <section id="view-home">
-<div class="stage"><div class="hint">Trascina la cabina · Avatar per vestire il gemello</div><canvas id="view3d"></canvas>
+<div class="stage"><div class="hint">Trascina per girare la cabina. Tab Avatar = gemello vestito.</div><canvas id="view3d"></canvas>
 <div class="stage-ui"><button class="btn btn-gold" id="btnAdd">+ Capo</button><button class="btn btn-ghost" id="btn360">NB 1000 360°</button><button class="btn btn-ghost" id="btnMotion">Pausa</button></div></div>
 <div class="zones">
 <button class="zone" data-cat="Camicie"><strong>Camicie</strong></button>
@@ -68,7 +77,7 @@ dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 </section>
 <section id="view-avatar" hidden>
 <h2 style="font-family:'Cormorant Garamond',serif;font-size:30px;margin-bottom:8px">Il tuo gemello 3D</h2>
-<p style="color:var(--muted);margin-bottom:10px">Look casual NB oppure camicia + pantaloni blu.</p>
+<p style="color:var(--muted);margin-bottom:10px">Gira l’avatar. Casual NB oppure look classico blu.</p>
 <div class="stage"><canvas id="viewAvatar"></canvas></div>
 <div class="toolbar"><button class="btn btn-gold" id="lookCasual">Casual: maglia + cargo + 1000</button><button class="btn btn-ghost" id="lookClassico">Classico: camicia + pantaloni blu</button></div>
 </section>
@@ -79,7 +88,7 @@ dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 <div id="looks" class="grid"></div>
 </section>
 <section id="view-info" hidden>
-<p style="color:var(--muted);line-height:1.7">Capi inseriti: NB 1000, cargo STONEWARE MP41579, long sleeve PERMAFROST MT51931, camicia fiori 37, pantaloni blu 44. L’avatar è uno schema 3D, non una copia del tuo viso.</p>
+<p style="color:var(--muted);line-height:1.7">Se lo schermo 3D è nero, aggiorna la pagina. I capi sono già in lista sotto Capi.</p>
 <button class="btn btn-danger" id="wipe">Cancella dati</button>
 </section>
 </div>
@@ -106,16 +115,21 @@ dialog::backdrop{background:rgba(0,0,0,.62)}.dlg{padding:16px}
 import { initCloset3D } from "./scene3d.js";
 import { initShoe360 } from "./shoe3d.js";
 import { initAvatar3D } from "./avatar3d.js";
-const api = initCloset3D(document.getElementById("view3d"), () => window.__cabinaItems ? window.__cabinaItems() : []);
-if (window.__cabinaReady) window.__cabinaReady(api);
+try {
+  const api = initCloset3D(document.getElementById("view3d"), () => window.__cabinaItems ? window.__cabinaItems() : []);
+  if (window.__cabinaReady) window.__cabinaReady(api);
+} catch (e) { console.error(e); }
 let shoeApi=null;
-function open360(){ document.getElementById("dlg360").showModal(); if(shoeApi) shoeApi.dispose(); shoeApi=initShoe360(document.getElementById("view360")); }
+function open360(){
+  document.getElementById("dlg360").showModal();
+  try { if(shoeApi) shoeApi.dispose(); shoeApi=initShoe360(document.getElementById("view360")); } catch(e){ console.error(e); }
+}
 window.__open360=open360;
 document.getElementById("btn360").onclick=open360;
 document.getElementById("close360").onclick=()=>document.getElementById("dlg360").close();
-document.getElementById("btn360spin").onclick=()=>{ if(!shoeApi)return; const on=!shoeApi.isMoving(); shoeApi.setMotion(on); };
-const av=initAvatar3D(document.getElementById("viewAvatar"),"casual");
-document.getElementById("lookCasual").onclick=()=>av.setLook("casual");
-document.getElementById("lookClassico").onclick=()=>av.setLook("classico");
+let av=null;
+try { av=initAvatar3D(document.getElementById("viewAvatar"),"casual"); } catch(e){ console.error(e); }
+document.getElementById("lookCasual").onclick=()=>av && av.setLook("casual");
+document.getElementById("lookClassico").onclick=()=>av && av.setLook("classico");
 </script>
 </body></html>
