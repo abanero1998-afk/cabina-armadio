@@ -1,0 +1,10 @@
+{
+  "name": "La Mia Cabina",
+  "short_name": "Cabina",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#16100c",
+  "theme_color": "#1a120c",
+  "lang": "it",
+  "description": "Cabina armadio digitale personale: carica i tuoi vestiti e crea i look."
+}
